@@ -1,9 +1,13 @@
-## No label Datas & ADD BDD 100k Datasets for Lane Detection
+## No label Data & ADD BDD 100k Datasets for Lane Detection
 
 
-### Pretrain model 
+### Notice
+The code corresponding to No label DATA except for the BDD 100k part was written according to specific private data. In addition, since private data will not be disclosed, related contents and names are hidden. So there are awkward parts in README.md and README2.md contents.
+
+
+## Pretrain model 
 We pretrain Culane Resnet18 pretrained model, Tusimple Resnet18 pretrained model.
-Plus, ADD BDD 100k dataset pretrain models 
+Plus, ADD BDD 100k dataset pretrain models (Comming soon)
 See **experiments/** directory
 
 
@@ -23,14 +27,41 @@ See, **Reference git page** -> 3. Getting Start
 **Culane, Tusimple dataset: see Referce git page(DATASETS.md)**
 when you using No label Dataset you need to set 
 
+
 **BDD 100k**
+Coming soon
+
+**Private v1**
 ```
-KODAS1
+Privatev1
 ├── Input
 ├── Output
 └── GT
 ```
 
+**Private v3** 
+```
+Private_v3
+├── 2019Y07M05D16H49m20s
+│   ├── RadarF
+│   ├── NsuMDB
+│   ├── Object
+│   ├── VLS128
+│   └── Camera_FrontMid
+│        └── FrontMid
+├── 2019Y07M05D15H43m44s
+│   ├──...
+├── 2019Y07M05D16H18m12s
+│   ├──...
+├── 2019Y07M05D16H47m20s
+│   ├──...
+├── 2019Y07M05D16H01m58s
+│   ├──...
+├── 2019Y07M05D15H48m42s
+│   ├──...
+└── 2019Y07M05D16H41m35s
+    ├──...
+```
 
 ## Usage
 ```bash
@@ -48,10 +79,10 @@ conda env create -f environment.yaml
 #NMS setup
 cd lib/nms; python setup.py install; cd -
 
-# test KODAS V1
-sh Kodasv1.sh
-# test KODAS V3
-sh Kodasv3.sh
+# test Private V1
+sh Private.sh
+# test Private V3
+sh Private2.sh
 ```
 
 ## Public Dataset Results
@@ -79,11 +110,11 @@ sh Kodasv3.sh
 
 ### Private Version1 Output Example
 
-[![KODAS v1 video](data/figures/kodas_v1_somenail.PNG "KODAS v1 video")](https://drive.google.com/file/d/1pFEE4BS-hTz8jQ8ngwvC9eF1RnsaBhNM/view?usp=sharing)
+[![Private v1 video](data/figures/Private_v1_somenail.PNG "Private v1 video")](https://drive.google.com/file/d/1pFEE4BS-hTz8jQ8ngwvC9eF1RnsaBhNM/view?usp=sharing)
 
 #### Private Version3 Output Example
 
-[![KODAS v3 video](data/figures/kodas_v3_somenail.PNG "KODAS v3 video")](https://drive.google.com/file/d/19g3bxXVbK9bQHNNodMMGjEmh8tm-R97t/view?usp=sharing)
+[![Private v3 video](data/figures/Private_v3_somenail.PNG "Private v3 video")](https://drive.google.com/file/d/19g3bxXVbK9bQHNNodMMGjEmh8tm-R97t/view?usp=sharing)
 
 ## Hyper Parameters
 See Reference git page or  [README2.md](README2.md).
