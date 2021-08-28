@@ -16,7 +16,7 @@ When you test using the **.sh** file, you need to modify the hyperparameter as s
 
 first_dir="/data2/lane_data/ckpt/"
 second_dir="result_"
-dataset="kodasv1"
+dataset="Private"
 _view="all"
 ckpt="laneatt_r18_culane"
 data_dir="/data2/datasets/Private_Data/Input/"

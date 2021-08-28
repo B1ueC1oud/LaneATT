@@ -105,7 +105,7 @@ class Runner:
         if on_val and self.test_dataset ==None:
             dataloader = self.get_val_dataloader()
         elif self.test_dataset !=None:
-            dataloader =self.get_kodas_test_dataloader()
+            dataloader =self.get_Private_test_dataloader()
         else:
             dataloader = self.get_test_dataloader()
         test_parameters = self.cfg.get_test_parameters()
@@ -158,8 +158,8 @@ class Runner:
                                                    worker_init_fn=self._worker_init_fn_)
         return train_loader
 
-    def get_kodas_test_dataloader(self):
-        self.cfg.set_kodas('test', self.dataset_type,self.conf_threshold, self.nms_thres, self.nms_topk,self.root)
+    def get_Private_test_dataloader(self):
+        self.cfg.set_Private('test', self.dataset_type,self.conf_threshold, self.nms_thres, self.nms_topk,self.root)
         test_dataset = self.cfg.get_dataset('test')
         test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                                   batch_size=self.cfg['batch_size'] if not self.view else 1,

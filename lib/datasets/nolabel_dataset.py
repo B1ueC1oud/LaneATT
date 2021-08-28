@@ -37,7 +37,7 @@ class NoLabelDataset(LaneDatasetLoader):
         #print(self.max_lanes)
         #dataset=get_dataset()
         self.annotations = []
-        if self.dataset_type=="kodasv3":
+        if self.dataset_type=="Privatev3":
             tmp = ["2019Y07M05D15H43m44s", "2019Y07M05D15H48m42s", "2019Y07M05D16H01m58s", "2019Y07M05D16H18m12s",
                    "2019Y07M05D16H41m35s", "2019Y07M05D16H47m20s", "2019Y07M05D16H49m20s"]
             temp = []
@@ -50,7 +50,7 @@ class NoLabelDataset(LaneDatasetLoader):
             for i in temp:
                 for file in i:
                     self.annotations.append({'lanes': [], 'path': file})
-        elif self.dataset_type=="kodasv1":
+        elif self.dataset_type=="Privatev1":
             pattern = '{}/*{}'.format(self.root, self.img_ext)
             print('Looking for image files with the pattern', pattern)
             temp=sorted(glob.glob(pattern, recursive=True))

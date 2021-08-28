@@ -18,7 +18,7 @@ class Config:
     def __repr__(self):
         return self.config_str
 
-    def set_kodas(self, split,dataset_type,conf_threshold,nms_thres,nms_topk,root):
+    def set_Private(self, split,dataset_type,conf_threshold,nms_thres,nms_topk,root):
         self.config['datasets'][split]['parameters']['dataset_type']=dataset_type
         self.config['datasets'][split]['parameters']['root'] = root
         self.config['test_parameters']['conf_threshold'] =conf_threshold
