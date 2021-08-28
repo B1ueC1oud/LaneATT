@@ -112,11 +112,11 @@ sh Private2.sh
 
 ### Private Version1 Output Example
 
-[![Private v1 video](data/figures/Private_v1_somenail.PNG "Private v1 video")](https://drive.google.com/file/d/1Ptx9bdYE5W5oOkGcOfyMWVtjfcCRPw06/view?usp=sharing)
+[![Private v1 video](data/figures/privatev1_somenail.PNG "Private v1 video")](https://drive.google.com/file/d/1Ptx9bdYE5W5oOkGcOfyMWVtjfcCRPw06/view?usp=sharing)
 
 #### Private Version3 Output Example
 
-[![Private v3 video](data/figures/Private_v3_somenail.PNG "Private v3 video")](https://drive.google.com/file/d/1wpSbKLqEqYh0jZXyW-kC9Jf0OOY2-IzG/view?usp=sharing)
+[![Private v3 video](data/figures/privatev3_somenail.PNG "Private v3 video")](https://drive.google.com/file/d/1wpSbKLqEqYh0jZXyW-kC9Jf0OOY2-IzG/view?usp=sharing)
 
 ## Hyper Parameters
 See Reference git page or  [README2.md](README2.md).
