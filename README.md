@@ -2,7 +2,9 @@
 
 
 ### Notice
-The code corresponding to No label DATA except for the BDD 100k part was written according to specific private data. In addition, since private data will not be disclosed, related contents and names are hidden. So there are awkward parts in README.md and README2.md contents.
+The code corresponding to No label DATA except for the BDD 100k part was written according to specific private data. <br>
+In addition, since private data will not be disclosed, related contents and names are hidden. <br>
+So there are awkward parts in README.md and README2.md contents.
 
 
 ## Pretrain model 
