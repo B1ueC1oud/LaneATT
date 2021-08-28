@@ -68,7 +68,9 @@ class LaneATT(nn.Module):
         self.initialize_layer(self.reg_layer)
 
     def forward(self, x, conf_threshold=None, nms_thres=0, nms_topk=3000):
+        # print(x.size())
         batch_features = self.feature_extractor(x)
+        # print(batch_features.size())
         batch_features = self.conv1(batch_features)
         batch_anchor_features = self.cut_anchor_features(batch_features)
 
@@ -233,6 +235,8 @@ class LaneATT(nn.Module):
         # actual cutting
         for batch_idx, img_features in enumerate(features):
             rois = img_features[self.cut_zs, self.cut_ys, self.cut_xs].view(n_proposals, n_fmaps, self.fmap_h, 1)
+            # print(rois)
+            # print(rois[self.invalid_mask] )
             rois[self.invalid_mask] = 0
             batch_anchor_features[batch_idx] = rois
 

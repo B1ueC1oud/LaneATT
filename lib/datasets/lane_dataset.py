@@ -29,6 +29,7 @@ class LaneDataset(Dataset):
                  dataset='tusimple',
                  augmentations=None,
                  normalize=False,
+                 dataset_type=None,
                  img_size=(360, 640),
                  aug_chance=1.,
                  **kwargs):
@@ -40,7 +41,10 @@ class LaneDataset(Dataset):
         elif dataset == 'llamas':
             self.dataset = LLAMAS(**kwargs)
         elif dataset == 'nolabel_dataset':
-            self.dataset = NoLabelDataset(**kwargs)
+            print("--------------------1")
+            print(dataset_type)
+            print(dataset)
+            self.dataset = NoLabelDataset(dataset_type=dataset_type,**kwargs)
         else:
             raise NotImplementedError()
         self.n_strips = S - 1
@@ -65,6 +69,7 @@ class LaneDataset(Dataset):
         self.to_tensor = ToTensor()
         self.transform = iaa.Sequential([iaa.Sometimes(then_list=augmentations, p=aug_chance), transformations])
         self.max_lanes = self.dataset.max_lanes
+        print(self.max_lanes)
 
     @property
     def annotations(self):
@@ -209,14 +214,43 @@ class LaneDataset(Dataset):
             data.append((matches, accs, pred))
         else:
             fp = fn = None
+        mat=0
         for matches, accs, datum in data:
+            mat = 0
+            #print(datum[:,0])
+            #print(len(datum))
+            temp=[]
             for i, l in enumerate(datum):
-                if matches is None:
-                    color = GT_COLOR
-                elif matches[i]:
-                    color = PRED_HIT_COLOR
-                else:
-                    color = PRED_MISS_COLOR
+                temp.append(l.points)
+            if  len(datum) != 0:
+                if len(datum) == 2:
+                    if (sum(temp[0][:, 0])/len(temp[0][:, 0]))  > (sum(temp[1][:, 0])/len(temp[1][:, 0])) :
+                        color=[(255,0,0),(0,0,255)]
+                    else:
+                        color = [(0, 0, 255), (255, 0, 0)]
+                if len(datum) == 1:
+                    #print(len(temp[0][0]))
+                    if (sum(temp[0][:, 0])/len(temp[0][:, 0])) > 0.5:
+                        color=[(255,0,0)]
+                    else:
+                        color = [(0, 0, 255)]
+
+            num=0
+            for i, l in enumerate(datum):
+                # if matches is None:
+                #     color = GT_COLOR
+                # elif matches[i]:
+                #     color = PRED_HIT_COLOR
+                # else:
+                #     color = PRED_MISS_COLOR
+                # if mat==0:
+                #     color = GT_COLOR
+                #     mat=1
+                # elif mat==1:
+                #     color = PRED_MISS_COLOR
+                #     mat=2
+                # else:
+                #     color = PRED_HIT_COLOR
                 points = l.points
                 points[:, 0] *= img.shape[1]
                 points[:, 1] *= img.shape[0]
@@ -227,8 +261,9 @@ class LaneDataset(Dataset):
                     img = cv2.line(img,
                                    tuple(curr_p),
                                    tuple(next_p),
-                                   color=color,
+                                   color=color[num],
                                    thickness=3 if matches is None else 3)
+                num+=1
                 # if 'start_x' in l.metadata:
                 #     start_x = l.metadata['start_x'] * img.shape[1]
                 #     start_y = l.metadata['start_y'] * img.shape[0]

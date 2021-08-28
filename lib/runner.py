@@ -6,16 +6,38 @@ import cv2
 import torch
 import numpy as np
 from tqdm import tqdm, trange
+import os
+from natsort import natsorted
+import re
 
 
 class Runner:
-    def __init__(self, cfg, exp, device, resume=False, view=None, deterministic=False):
+    def __init__(self, cfg, exp, device, test_dataset,test_first_dir,test_second_dir,exp_name,hyper,hyper_param,video_name,root_path,resume=False, view=None, deterministic=False):
         self.cfg = cfg
         self.exp = exp
         self.device = device
         self.resume = resume
         self.view = view
+        self.test_dataset=test_dataset
+        self.test_first_dir=test_first_dir
+        self.test_second_dir=test_second_dir
         self.logger = logging.getLogger(__name__)
+
+        self.dataset_type=hyper_param[3]
+        self.conf_threshold=hyper_param[0]
+        self.nms_thres=hyper_param[1]
+        self.nms_topk=hyper_param[2]
+
+        self.root=root_path
+        self.video_name=video_name
+        self.hyper=hyper
+        print(self.root)
+        self.exp_name = "/{}/{}/".format(exp_name,self.hyper)
+        self.name = test_first_dir + test_second_dir +test_dataset
+        print(self.name)
+        self.log_dir = self.name+self.exp_name#os.path.join(self.name,self.exp_name)
+        print(self.log_dir)
+        os.makedirs(self.log_dir, exist_ok=True)
 
         # Fix seeds
         torch.manual_seed(cfg['seed'])
@@ -41,7 +63,7 @@ class Runner:
         loss_parameters = self.cfg.get_loss_parameters()
         for epoch in trange(starting_epoch, max_epochs + 1, initial=starting_epoch - 1, total=max_epochs):
             self.exp.epoch_start_callback(epoch, max_epochs)
-            model.train()
+            model.eval()
             pbar = tqdm(train_loader)
             for i, (images, labels, _) in enumerate(pbar):
                 images = images.to(self.device)
@@ -73,14 +95,17 @@ class Runner:
         self.exp.train_end_callback()
 
     def eval(self, epoch, on_val=False, save_predictions=False):
+        #prediction_name="predictions_r34_culane"#
         model = self.cfg.get_model()
         model_path = self.exp.get_checkpoint_path(epoch)
         self.logger.info('Loading model %s', model_path)
         model.load_state_dict(self.exp.get_epoch_model(epoch))
         model = model.to(self.device)
         model.eval()
-        if on_val:
+        if on_val and self.test_dataset ==None:
             dataloader = self.get_val_dataloader()
+        elif self.test_dataset !=None:
+            dataloader =self.get_kodas_test_dataloader()
         else:
             dataloader = self.get_test_dataloader()
         test_parameters = self.cfg.get_test_parameters()
@@ -96,14 +121,33 @@ class Runner:
                     img = (images[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
                     img, fp, fn = dataloader.dataset.draw_annotation(idx, img=img, pred=prediction[0])
                     if self.view == 'mistakes' and fp == 0 and fn == 0:
-                        continue
-                    cv2.imshow('pred', img)
-                    cv2.waitKey(0)
+                         continue
 
-        if save_predictions:
-            with open('predictions.pkl', 'wb') as handle:
-                pickle.dump(predictions, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        self.exp.eval_end_callback(dataloader.dataset.dataset, predictions, epoch)
+                    __name=self.log_dir+str(idx) + '.jpg'
+
+                    cv2.imwrite(__name, img)
+                    cv2.waitKey(0)
+        image_folder = self.log_dir
+        video_name =  self.log_dir+self.video_name+'.avi'
+        images = [img for img in os.listdir(image_folder) if img.endswith(".jpg")]
+        images = natsorted(images)
+        frame = cv2.imread(os.path.join(image_folder, images[0]))
+        height, width, layers = frame.shape
+
+        video = cv2.VideoWriter(video_name, 0, 30, (width, height))
+
+        for image in images:
+            video.write(cv2.imread(os.path.join(image_folder, image)))
+
+        cv2.destroyAllWindows()
+        video.release()
+
+        # if save_predictions:
+        #     with open("/data2/lane_data/LaneATT/prediction/8_7/"+prediction_name+'.pkl', 'wb') as handle:
+        #         pickle.dump(predictions, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        # self.exp.eval_end_callback(dataloader.dataset.dataset, predictions, epoch)
+
+
 
     def get_train_dataloader(self):
         train_dataset = self.cfg.get_dataset('train')
@@ -113,6 +157,16 @@ class Runner:
                                                    num_workers=8,
                                                    worker_init_fn=self._worker_init_fn_)
         return train_loader
+
+    def get_kodas_test_dataloader(self):
+        self.cfg.set_kodas('test', self.dataset_type,self.conf_threshold, self.nms_thres, self.nms_topk,self.root)
+        test_dataset = self.cfg.get_dataset('test')
+        test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
+                                                  batch_size=self.cfg['batch_size'] if not self.view else 1,
+                                                  shuffle=False,
+                                                  num_workers=8,
+                                                  worker_init_fn=self._worker_init_fn_)
+        return test_loader
 
     def get_test_dataloader(self):
         test_dataset = self.cfg.get_dataset('test')
