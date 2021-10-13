@@ -1,0 +1,25 @@
+Git hash: 7989f45c2c33b0da2f60d49c8ba8bf8343d101b5
+
+*************
+Git diff:
+*************
+diff --git a/main.py b/main.py
+index 95a954f..019b7d8 100644
+--- a/main.py
++++ b/main.py
+@@ -1,6 +1,6 @@
+ import logging
+ import argparse
+-
++import os
+ import torch
+ 
+ from lib.config import Config
+@@ -38,6 +38,7 @@ def parse_args():
+ 
+ def main():
+     args = parse_args()
++    os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+     exp = Experiment(args.exp_name, args, mode=args.mode)
+     if args.cfg is None:
+         cfg_path = exp.cfg_path
