@@ -1,11 +1,11 @@
 #!/bin/bash
 
-first_dir="/mnt/work/kim/lane_data/test/"
+first_dir="address"
 second_dir="result_"
-dataset="kodasv1"
+dataset="Privatev1"
 _view="all"
 ckpt="laneatt_r18_culane"
-data_dir="/mnt/work/kim/datasets/KODAS1/Input/"
+data_dir="datasets/Privatev1/Input/"
 conf_threshold="0.4"
 nms_thres="45."
 max_lane="2"
