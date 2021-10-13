@@ -85,6 +85,8 @@ cd lib/nms; python setup.py install; cd -
 sh Private.sh
 # test Private V3
 sh Private2.sh
+# test webcam
+sh webcam.sh
 ```
 
 ## Public Dataset Results
